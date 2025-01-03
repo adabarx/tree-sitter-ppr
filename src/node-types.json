@@ -4,13 +4,9 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
-        {
-          "type": "fragment",
-          "named": true
-        },
         {
           "type": "sentence",
           "named": true
@@ -27,6 +23,41 @@
     "type": "comma",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "core",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "end",
+          "named": true
+        },
+        {
+          "type": "hyphen",
+          "named": true
+        },
+        {
+          "type": "other",
+          "named": true
+        },
+        {
+          "type": "style_marker",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        },
+        {
+          "type": "wtf",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "document",
@@ -100,15 +131,7 @@
           "named": true
         },
         {
-          "type": "parentheses",
-          "named": true
-        },
-        {
           "type": "punctuation",
-          "named": true
-        },
-        {
-          "type": "quote",
           "named": true
         },
         {
@@ -117,6 +140,10 @@
         },
         {
           "type": "word",
+          "named": true
+        },
+        {
+          "type": "wtf",
           "named": true
         }
       ]
@@ -153,10 +180,6 @@
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "fragment",
-          "named": true
-        },
         {
           "type": "h1",
           "named": true
@@ -207,6 +230,49 @@
     "type": "identifier",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "layer",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "core",
+          "named": true
+        },
+        {
+          "type": "hyphen",
+          "named": true
+        },
+        {
+          "type": "layer",
+          "named": true
+        },
+        {
+          "type": "other",
+          "named": true
+        },
+        {
+          "type": "punctuation",
+          "named": true
+        },
+        {
+          "type": "style_marker",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        },
+        {
+          "type": "wtf",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "other",
@@ -281,6 +347,14 @@
           "named": true
         },
         {
+          "type": "parentheses",
+          "named": true
+        },
+        {
+          "type": "quote",
+          "named": true
+        },
+        {
           "type": "semicolon",
           "named": true
         }
@@ -311,39 +385,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "end",
+          "type": "core",
           "named": true
         },
         {
-          "type": "hyphen",
-          "named": true
-        },
-        {
-          "type": "other",
-          "named": true
-        },
-        {
-          "type": "parentheses",
-          "named": true
-        },
-        {
-          "type": "punctuation",
-          "named": true
-        },
-        {
-          "type": "quote",
-          "named": true
-        },
-        {
-          "type": "style_marker",
-          "named": true
-        },
-        {
-          "type": "word",
+          "type": "layer",
           "named": true
         }
       ]
@@ -381,13 +431,9 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
-        {
-          "type": "fragment",
-          "named": true
-        },
         {
           "type": "sentence",
           "named": true
@@ -549,7 +595,19 @@
     "named": true
   },
   {
+    "type": "wtf",
+    "named": true
+  },
+  {
     "type": "~",
+    "named": false
+  },
+  {
+    "type": "“",
+    "named": false
+  },
+  {
+    "type": "”",
     "named": false
   }
 ]

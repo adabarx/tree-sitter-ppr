@@ -19,33 +19,17 @@ module.exports = grammar({
       $.paragraph,
     )),
 
-    title: $ => seq('\\', 'T',
-      seq(
-        repeat($.sentence),
-        optional($.fragment),
-      )
-    ), 
-    heading: $ => seq('\\', choice($.h1, $.h2, $.h3, $.h4, $.h5, $.h6),
-      seq(
-        repeat($.sentence),
-        optional($.fragment),
-      )
-    ),
-    bookmark: $ => seq('\\', 'B',
-      seq(
-        repeat($.sentence),
-        optional($.fragment),
-      )
-    ), 
-    paragraph: $ => seq('\\', 'P', repeat($.sentence), optional($.fragment)),
+    title: $ => seq('\\', 'T', $.sentence), 
+    heading: $ => seq('\\', choice($.h1, $.h2, $.h3, $.h4, $.h5, $.h6), $.sentence),
+    bookmark: $ => seq('\\', 'B', $.sentence),
+    paragraph: $ => seq('\\', 'P', seq(repeat($.sentence), repeat($.fragment))),
 
     identifier: $ => seq(/[a-z]/, /[a-zA-Z\d]*/),
     parameter: $ => seq(/[a-z]/, /[a-zA-Z\d]*/),
     value: $ => seq('"', /[^"]+/, '"'),
     function: $ => seq('\\', $.identifier, '(', repeat(seq($.parameter, ':', $.value, ',')), optional(seq($.parameter, ':', $.value)), ')'),
 
-    //word: $ => /[a-zA-Z'\d]+(-[a-zA-Z'\d]+)*/,
-    word: $ => /[a-zA-Z'\d]+/,
+    word: $ => /[a-zA-Z'’\d]+/,
     hyphen: $ => seq($.word, repeat1(seq('-', $.word))),
 
     style_marker: $ => choice(
@@ -55,23 +39,30 @@ module.exports = grammar({
       $.reference,
     ),
 
-    sentence: $ => prec(3, seq(repeat1(choice(
-      $.hyphen,
-      $.word,
-      $.punctuation,
-      $._surround,
-      $.style_marker,
-      $.other,
-    )), $.end)),
+    fragment: $ => prec.right(seq($._fragment, repeat($.punctuation))),
+
+    sentence: $ => prec.right(choice(
+      $.core,
+      $.layer,
+    )),
+
+    core: $ => prec(1, seq($._fragment, $.end)),
+    layer: $ => prec(2, choice(
+      seq($._fragment, $.punctuation, $.core),
+      seq($._fragment, $.punctuation, $.layer),
+    )),
     
-    fragment: $ => prec(2, repeat1(choice(
+    _fragment: $ => repeat1(choice(
       $.hyphen,
       $.word,
-      $.punctuation,
-      $._surround,
       $.style_marker,
       $.other,
-    ))),
+      $.wtf,
+    )),
+
+    // capture any junk characters that would cause tree sitter to error
+    wtf: $ => /[^a-zA-Z'’\d\s\-\"@\$\%\^&\*\_\+=~`.,;:\/?!\\]+/,
+
     
     end: $ => choice(
       $.period,
@@ -80,6 +71,7 @@ module.exports = grammar({
     ),
 
     punctuation: $ => choice(
+      $._surround,
       $.comma,
       $.semicolon,
       $.colon,
@@ -92,9 +84,17 @@ module.exports = grammar({
       $.parentheses,
     ),
 
-    quote: $ => prec.left(seq("\"", repeat($.sentence), optional($.fragment), "\"")),
+    _surround_content: $ => choice(
+      seq(repeat1($.sentence), repeat($.fragment)),
+      seq(repeat($.sentence), repeat1($.fragment)),
+    ),
 
-    parentheses: $ => prec.left(seq("(", repeat($.sentence), optional($.fragment), ")")),
+    quote: $ => prec.left(choice(
+      seq("\"", $._surround_content, "\""),
+      seq( "“", $._surround_content, "”"),
+    )),
+
+    parentheses: $ => prec.left(seq("(", $._surround_content, ")")),
 
     other: $ => choice('@', '$', '%', '^', '&', '*', '&', '_', '+', '=', '~', '`'),
 

@@ -42,28 +42,8 @@
           "value": "T"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "REPEAT",
-              "content": {
-                "type": "SYMBOL",
-                "name": "sentence"
-              }
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "fragment"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "sentence"
         }
       ]
     },
@@ -104,28 +84,8 @@
           ]
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "REPEAT",
-              "content": {
-                "type": "SYMBOL",
-                "name": "sentence"
-              }
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "fragment"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "sentence"
         }
       ]
     },
@@ -141,28 +101,8 @@
           "value": "B"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "REPEAT",
-              "content": {
-                "type": "SYMBOL",
-                "name": "sentence"
-              }
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "fragment"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "sentence"
         }
       ]
     },
@@ -178,21 +118,21 @@
           "value": "P"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "sentence"
-          }
-        },
-        {
-          "type": "CHOICE",
+          "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "fragment"
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "sentence"
+              }
             },
             {
-              "type": "BLANK"
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "fragment"
+              }
             }
           ]
         }
@@ -313,7 +253,7 @@
     },
     "word": {
       "type": "PATTERN",
-      "value": "[a-zA-Z'\\d]+"
+      "value": "[a-zA-Z'’\\d]+"
     },
     "hyphen": {
       "type": "SEQ",
@@ -361,43 +301,52 @@
         }
       ]
     },
-    "sentence": {
-      "type": "PREC",
-      "value": 3,
+    "fragment": {
+      "type": "PREC_RIGHT",
+      "value": 0,
       "content": {
         "type": "SEQ",
         "members": [
           {
-            "type": "REPEAT1",
+            "type": "SYMBOL",
+            "name": "_fragment"
+          },
+          {
+            "type": "REPEAT",
             "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "hyphen"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "word"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "punctuation"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_surround"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "style_marker"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "other"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "punctuation"
             }
+          }
+        ]
+      }
+    },
+    "sentence": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "core"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "layer"
+          }
+        ]
+      }
+    },
+    "core": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_fragment"
           },
           {
             "type": "SYMBOL",
@@ -406,41 +355,80 @@
         ]
       }
     },
-    "fragment": {
+    "layer": {
       "type": "PREC",
       "value": 2,
       "content": {
-        "type": "REPEAT1",
-        "content": {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "hyphen"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "word"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "punctuation"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_surround"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "style_marker"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "other"
-            }
-          ]
-        }
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_fragment"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "punctuation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "core"
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_fragment"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "punctuation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "layer"
+              }
+            ]
+          }
+        ]
       }
+    },
+    "_fragment": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "hyphen"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "word"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "style_marker"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "other"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "wtf"
+          }
+        ]
+      }
+    },
+    "wtf": {
+      "type": "PATTERN",
+      "value": "[^a-zA-Z'’\\d\\s\\-\\\"@\\$\\%\\^&\\*\\_\\+=~`.,;:\\/?!\\\\]+"
     },
     "end": {
       "type": "CHOICE",
@@ -462,6 +450,10 @@
     "punctuation": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_surround"
+        },
         {
           "type": "SYMBOL",
           "name": "comma"
@@ -497,38 +489,88 @@
         }
       ]
     },
+    "_surround_content": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "REPEAT1",
+              "content": {
+                "type": "SYMBOL",
+                "name": "sentence"
+              }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "fragment"
+              }
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "sentence"
+              }
+            },
+            {
+              "type": "REPEAT1",
+              "content": {
+                "type": "SYMBOL",
+                "name": "fragment"
+              }
+            }
+          ]
+        }
+      ]
+    },
     "quote": {
       "type": "PREC_LEFT",
       "value": 0,
       "content": {
-        "type": "SEQ",
+        "type": "CHOICE",
         "members": [
           {
-            "type": "STRING",
-            "value": "\""
-          },
-          {
-            "type": "REPEAT",
-            "content": {
-              "type": "SYMBOL",
-              "name": "sentence"
-            }
-          },
-          {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "fragment"
+                "type": "STRING",
+                "value": "\""
               },
               {
-                "type": "BLANK"
+                "type": "SYMBOL",
+                "name": "_surround_content"
+              },
+              {
+                "type": "STRING",
+                "value": "\""
               }
             ]
           },
           {
-            "type": "STRING",
-            "value": "\""
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "“"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_surround_content"
+              },
+              {
+                "type": "STRING",
+                "value": "”"
+              }
+            ]
           }
         ]
       }
@@ -544,23 +586,8 @@
             "value": "("
           },
           {
-            "type": "REPEAT",
-            "content": {
-              "type": "SYMBOL",
-              "name": "sentence"
-            }
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "fragment"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
+            "type": "SYMBOL",
+            "name": "_surround_content"
           },
           {
             "type": "STRING",
